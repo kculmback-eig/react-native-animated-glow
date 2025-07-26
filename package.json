@@ -1,0 +1,47 @@
+{
+  "name": "react-native-animated-glow-wrapper",
+  "version": "1.0.0",
+  "description": "A fully customizable, performant, animated glow effect wrapper for any React Native component.",
+  "main": "index.js",
+  "files": [
+    "src",
+    "index.js",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/realimposter/react-native-animated-glow-wrapper.git"
+  },
+  "keywords": [
+    "react-native",
+    "glow",
+    "animation",
+    "reanimated",
+    "svg",
+    "border",
+    "effect",
+    "wrapper",
+    "neon",
+    "button glow",
+    "animated glow",
+    "glowing button"
+  ],
+  "author": "realimposter <support@imposterllc.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/realimposter/react-native-animated-glow-wrapper/issues"
+  },
+  "homepage": "reactnativeglow.com",
+  "dependencies": {
+    "prop-types": "^15.8.1"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-reanimated": ">=2.0.0",
+    "react-native-svg": ">=12.0.0"
+  }
+}
