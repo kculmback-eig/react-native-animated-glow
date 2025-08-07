@@ -5,6 +5,9 @@
 # Exclude all paid content and assets
 /products/
 
+# ignore example/presets/glow-presets-pro.js
+example/presets/glow-presets-pro.js
+
 
 # ===================================================================
 # General
