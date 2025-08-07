@@ -5,7 +5,7 @@
 //
 // Thank you for your purchase!
 // This file contains over 20 professionally designed presets for the
-// react-native-animated-glow-wrapper library.
+// react-native-animated-glow library.
 //
 // License: You are granted a license to use these presets in any number
 // of personal and commercial projects. You may not, however, resell or

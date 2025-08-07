@@ -11,8 +11,8 @@ import {
   Alert,
 } from 'react-native';
 // Import the component AND the exported PresetConfig type
-import AnimatedGlowWrapper, { PresetConfig } from './AnimatedGlowWrapper';
-// Ensure this file is named glow-presets-pro.ts and is typed
+import AnimatedGlow, { PresetConfig } from './AnimatedGlow';
+//import AnimatedGlow, { PresetConfig } from 'react-native-animated-glow';
 import { glowPresetsPro } from './glow-presets-pro';
 import ColorPicker, {
   Panel1,
@@ -142,14 +142,14 @@ const PresetShowcaseItem: FC<PresetShowcaseItemProps> = ({ presetName, initialPr
       <CustomColorPicker isVisible={isColorPickerVisible} onClose={() => setColorPickerVisible(false)} initialColor={getInitialPickerColor()} onComplete={handleColorComplete} />
       <Text style={styles.presetTitle}>{presetName}</Text>
       
-      <AnimatedGlowWrapper 
+      <AnimatedGlow 
         key={JSON.stringify(config)} // Re-mounts the component on config change to restart animations
         {...config}
       >
         <View style={styles.box}>
           <Text style={styles.boxText}>{presetName === 'Default' ? 'Default Glow' : 'PREMIUM'}</Text>
         </View>
-      </AnimatedGlowWrapper>
+      </AnimatedGlow>
 
       <PresetDebugTable preset={config} onUpdate={handleUpdate} />
     </View>

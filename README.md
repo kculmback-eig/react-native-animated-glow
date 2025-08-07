@@ -1,14 +1,14 @@
-# React Native Animated Glow Wrapper
+# React Native Animated Glow 
 
 <div align="center">
 
-[![NPM Version](https://img.shields.io/npm/v/react-native-animated-glow-wrapper.svg)](https://www.npmjs.com/package/react-native-animated-glow-wrapper)
-[![NPM License](https://img.shields.io/npm/l/react-native-animated-glow-wrapper.svg)](https://github.com/realimposter/react-native-animated-glow-wrapper/blob/main/LICENSE)
-[![NPM Downloads](https://img.shields.io/npm/dt/react-native-animated-glow-wrapper.svg)](https://www.npmjs.com/package/react-native-animated-glow-wrapper)
+[![NPM Version](https://img.shields.io/npm/v/react-native-animated-glow.svg)](https://www.npmjs.com/package/react-native-animated-glow)
+[![NPM License](https://img.shields.io/npm/l/react-native-animated-glow.svg)](https://github.com/realimposter/react-native-animated-glow/blob/main/LICENSE)
+[![NPM Downloads](https://img.shields.io/npm/dt/react-native-animated-glow.svg)](https://www.npmjs.com/package/react-native-animated-glow)
 
 </div>
 
-![React Native Animated Glow Wrapper Demo](https://raw.githubusercontent.com/realimposter/react-native-animated-glow-wrapper/main/assets/react-native-glow-demo.gif)
+![React Native Animated Glow  Demo](https://raw.githubusercontent.com/realimposter/react-native-animated-glow/main/assets/react-native-glow-demo.gif)
 
 A fully customizable, performant, animated glow effect wrapper for any React Native component, powered by Reanimated 2 and SVG.
 
@@ -17,19 +17,19 @@ A fully customizable, performant, animated glow effect wrapper for any React Nat
 -   **Highly Performant:** All animations run on the native UI thread thanks to React Native Reanimated.
 -   **Fully Customizable:** Control colors, speed, size, opacity, shape, and more for two independent glow layers.
 -   **Preset System:** Easily apply complex styles by passing a simple preset object.
--   **Easy to Use:** Wrap any component in `<AnimatedGlowWrapper>` to apply the effect instantly.
+-   **Easy to Use:** Wrap any component in `<AnimatedGlow>` to apply the effect instantly.
 -   **Lightweight:** No heavy dependencies outside of Reanimated and SVG.
 
 ## Installation
 
 ```bash
-npm install react-native-animated-glow-wrapper
+npm install react-native-animated-glow
 ```
 
 or
 
 ```bash
-yarn add react-native-animated-glow-wrapper
+yarn add react-native-animated-glow
 ```
 
 ### Peer Dependencies
@@ -48,16 +48,16 @@ npm install react-native-reanimated react-native-svg
 ### Basic Example
 
 ```jsx
-import AnimatedGlowWrapper from 'react-native-animated-glow-wrapper';
+import AnimatedGlow from 'react-native-animated-glow';
 import { Text, View } from 'react-native';
 
 function MyComponent() {
   return (
-    <AnimatedGlowWrapper>
+    <AnimatedGlow>
       <View style={{ padding: 20 }}>
         <Text>I'm Glowing!</Text>
       </View>
-    </AnimatedGlowWrapper>
+    </AnimatedGlow>
   );
 }
 ```
@@ -67,14 +67,14 @@ function MyComponent() {
 The real power comes from using presets. You can define your own or use our official preset packs.
 
 ```jsx
-import AnimatedGlowWrapper from 'react-native-animated-glow-wrapper';
+import AnimatedGlow from 'react-native-animated-glow';
 import { glowPresetsPro } from './path/to/your/presets'; // Your local preset file
 
 function HotFlameButton() {
   return (
-    <AnimatedGlowWrapper preset={glowPresetsPro.hotFlame}>
+    <AnimatedGlow preset={glowPresetsPro.hotFlame}>
       <Text>🔥</Text>
-    </AnimatedGlowWrapper>
+    </AnimatedGlow>
   );
 }
 ```
@@ -84,20 +84,20 @@ function HotFlameButton() {
 You can easily override any value from a preset by passing it as a prop.
 
 ```jsx
-<AnimatedGlowWrapper
+<AnimatedGlow
   preset={glowPresetsPro.hotFlame}
   animationSpeed={5} // Makes the animation much faster
   borderColor="cyan"
 >
   <Text>Fast Flame!</Text>
-</AnimatedGlowWrapper>
+</AnimatedGlow>
 ```
 
 ## Presets
 
 We offer preset packs to get you started with stunning effects out of the box.
 
--   🎁 **[Free Preset Pack](https://github.com/realimposter/react-native-animated-glow-wrapper/tree/main/products/free-presets)**: A set of hand-crafted presets to get you started. *(Coming soon!)*
+-   🎁 **[Free Preset Pack](https://github.com/realimposter/react-native-animated-glow/tree/main/products/free-presets)**: A set of hand-crafted presets to get you started. *(Coming soon!)*
 -   💎 **[Premium Preset Pack](https://reactnativeglow.lemonsqueezy.com/)**: Unlock over 20 professional, high-impact presets for just $9.99! Get effects like "Vaporwave," "Showtime," "Siren," and more.
 
 ## Props API
@@ -135,8 +135,8 @@ All props are optional except for `children`. You can mix and match them to crea
 
 ## Contributing
 
-Contributions are welcome! If you have a feature request, bug report, or want to improve the library, please feel free to open an issue or submit a pull request on our [GitHub repository](https://github.com/realimposter/react-native-animated-glow-wrapper).
+Contributions are welcome! If you have a feature request, bug report, or want to improve the library, please feel free to open an issue or submit a pull request on our [GitHub repository](https://github.com/realimposter/react-native-animated-glow).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/realimposter/react-native-animated-glow-wrapper/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/realimposter/react-native-animated-glow/blob/main/LICENSE) file for details.

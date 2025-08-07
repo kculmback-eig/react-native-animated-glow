@@ -1,6 +1,6 @@
 {
-  "name": "react-native-animated-glow-wrapper",
-  "version": "1.1.1",
+  "name": "react-native-animated-glow",
+  "version": "1.0.0",
   "description": "A fully customizable, performant, animated glow effect wrapper for any React Native component.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/realimposter/react-native-animated-glow-wrapper.git"
+    "url": "git+https://github.com/realimposter/react-native-animated-glow.git"
   },
   "keywords": [
     "react-native",
@@ -33,7 +33,7 @@
   "author": "realimposter <support@imposterllc.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/realimposter/react-native-animated-glow-wrapper/issues"
+    "url": "https://github.com/realimposter/react-native-animated-glow/issues"
   },
   "homepage": "https://reactnativeglow.com",
   "peerDependencies": {

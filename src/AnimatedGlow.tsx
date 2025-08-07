@@ -1,4 +1,3 @@
-//src/AnimatedGlowWrapper.tsx
 import React, {
   useState,
   useEffect,
@@ -51,7 +50,7 @@ export type PresetConfig = {
 };
 
 // Main component props
-export interface AnimatedGlowWrapperProps extends PresetConfig {
+export interface AnimatedGlowProps extends PresetConfig {
   preset?: PresetConfig;
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
@@ -134,7 +133,7 @@ const getGradientColor = (progress: number, colors: string[]): string => {
 // --- Internal Components ---
 
 const GlowDot: FC<GlowDotProps> = memo(({ color, size, index }) => {
-  const gradientId = `grad-${color.replace(/#/g, '')}-${index}`;
+  const gradientId = `grad-${color.replace(/#/, '')}-${index}`;
   return (
     <Svg height={size} width={size}>
       <Defs>
@@ -168,62 +167,51 @@ const AnimatedGlowDot: FC<AnimatedGlowDotProps> = ({
   cornerRadius,
 }) => {
   const animatedStyle = useAnimatedStyle(() => {
-    // Return an empty object if layout is not ready
+    // Hide off-screen if layout is not ready
     if (!layout || layout.width <= 0 || layout.height <= 0 || layout.count === 0) {
-      return {};
+      return { transform: [{ translateX: -9999 }, { translateY: -9999 }] };
     }
 
-    const currentPosProgress =
-      (progress.value + index / layout.count + randomOffset) % 1;
+    const currentPosProgress = (progress.value + index / layout.count + randomOffset) % 1;
     const currentScaleProgress = (scaleProgress.value + index / layout.count) % 1;
 
-    let x: number, y: number;
-
-    // Path calculation logic
-    const r = Math.max(0, cornerRadius);
+    // --- Core Logic Update ---
     const w = layout.width - inset * 2;
     const h = layout.height - inset * 2;
     const halfDot = dotSize / 2;
 
-    if (r <= 0 || w < 2 * r || h < 2 * r) {
-      // Logic for a simple rectangle
+    // Calculate the maximum possible radius based on the smaller dimension of the animatable area.
+    const maxRadius = Math.min(w / 2, h / 2);
+
+    // Use the user's cornerRadius, but never let it exceed the calculated maximum.
+    // This makes the animation robust and respects the user's intent as much as possible.
+    const r = Math.max(0, Math.min(cornerRadius, maxRadius));
+    // --- End Logic Update ---
+
+    let pt: Point; // This will hold the center point of the orb on the path
+
+    // Path calculation logic
+    if (r <= 0) {
+      // Logic for a simple rectangle (fallback for cornerRadius={0})
       const perimeter = 2 * (w + h);
       if (perimeter === 0) {
-        x = inset - halfDot;
-        y = inset - halfDot;
+        pt = { x: inset, y: inset };
       } else {
         let d = currentPosProgress * perimeter;
-        if (d <= w) {
-          x = inset + d - halfDot;
-          y = inset - halfDot;
-        } else {
-          d -= w;
-          if (d <= h) {
-            x = inset + w - halfDot;
-            y = inset + d - halfDot;
-          } else {
-            d -= h;
-            if (d <= w) {
-              x = inset + w - d - halfDot;
-              y = inset + h - halfDot;
-            } else {
-              d -= w;
-              x = inset - halfDot;
-              y = inset + h - d - halfDot;
-            }
-          }
-        }
+        if (d <= w) { pt = { x: inset + d, y: inset }; }
+        else { d -= w; if (d <= h) { pt = { x: inset + w, y: inset + d }; }
+        else { d -= h; if (d <= w) { pt = { x: inset + w - d, y: inset + h }; }
+        else { d -= w; pt = { x: inset, y: inset + h - d }; }}}
       }
     } else {
       // Logic for a rounded rectangle path
-      const sW = w - 2 * r;
-      const sH = h - 2 * r;
-      const aL = (Math.PI * r) / 2;
-      const p = 2 * (sW + sH) + 4 * aL;
+      const sW = w - 2 * r; // length of straight width
+      const sH = h - 2 * r; // length of straight height
+      const aL = (Math.PI * r) / 2; // arc length of one corner
+      const p = 2 * (sW + sH) + 4 * aL; // total perimeter
       let d = currentPosProgress * p;
 
-      // Worklet for Bezier curve calculation on the UI thread
-      const getPoint = (t: number, p0: Point, p1: Point, p2: Point): Point => {
+      const getPointOnQuadraticBezier = (t: number, p0: Point, p1: Point, p2: Point): Point => {
         'worklet';
         const o = 1 - t;
         return {
@@ -232,50 +220,61 @@ const AnimatedGlowDot: FC<AnimatedGlowDotProps> = ({
         };
       };
 
-      let pt: Point;
+      // Top Edge
       if (d <= sW) {
         pt = { x: inset + r + d, y: inset };
-      } else {
-        d -= sW;
-        if (d <= aL) {
-          pt = getPoint(d / aL, { x: inset + w - r, y: inset }, { x: inset + w, y: inset }, { x: inset + w, y: inset + r });
-        } else {
-          d -= aL;
-          if (d <= sH) {
-            pt = { x: inset + w, y: inset + r + d };
-          } else {
-            d -= sH;
-            if (d <= aL) {
-              pt = getPoint(d / aL, { x: inset + w, y: inset + h - r }, { x: inset + w, y: inset + h }, { x: inset + w - r, y: inset + h });
-            } else {
-              d -= aL;
-              if (d <= sW) {
-                pt = { x: inset + w - r - d, y: inset + h };
-              } else {
-                d -= sW;
-                if (d <= aL) {
-                  pt = getPoint(d / aL, { x: inset + r, y: inset + h }, { x: inset, y: inset + h }, { x: inset, y: inset + h - r });
-                } else {
-                  d -= aL;
-                  if (d <= sH) {
-                    pt = { x: inset, y: inset + h - r - d };
-                  } else {
-                    d -= sH;
-                    pt = getPoint(d / aL, { x: inset, y: inset + r }, { x: inset, y: inset }, { x: inset + r, y: inset });
-                  }
-                }
-              }
-            }
-          }
-        }
       }
-
-      x = pt.x - halfDot;
-      y = pt.y - halfDot;
+      // Top-Right Corner
+      else if (d <= sW + aL) {
+        const p0 = { x: inset + w - r, y: inset };
+        const p1 = { x: inset + w,     y: inset };
+        const p2 = { x: inset + w,     y: inset + r };
+        pt = getPointOnQuadraticBezier((d - sW) / aL, p0, p1, p2);
+      }
+      // Right Edge
+      else if (d <= sW + aL + sH) {
+        pt = { x: inset + w, y: inset + r + (d - sW - aL) };
+      }
+      // Bottom-Right Corner
+      else if (d <= sW + aL + sH + aL) {
+        const p0 = { x: inset + w,     y: inset + h - r };
+        const p1 = { x: inset + w,     y: inset + h };
+        const p2 = { x: inset + w - r, y: inset + h };
+        pt = getPointOnQuadraticBezier((d - sW - aL - sH) / aL, p0, p1, p2);
+      }
+      // Bottom Edge
+      else if (d <= sW + aL + sH + aL + sW) {
+        pt = { x: inset + w - r - (d - sW - aL - sH - aL), y: inset + h };
+      }
+      // Bottom-Left Corner
+      else if (d <= sW + aL + sH + aL + sW + aL) {
+        const p0 = { x: inset + r, y: inset + h };
+        const p1 = { x: inset,     y: inset + h };
+        const p2 = { x: inset,     y: inset + h - r };
+        pt = getPointOnQuadraticBezier((d - sW - aL - sH - aL - sW) / aL, p0, p1, p2);
+      }
+      // Left Edge
+      else if (d <= sW + aL + sH + aL + sW + aL + sH) {
+        pt = { x: inset, y: inset + h - r - (d - sW - aL - sH - aL - sW - aL) };
+      }
+      // Top-Left Corner
+      else {
+        const p0 = { x: inset,     y: inset + r };
+        const p1 = { x: inset,     y: inset };
+        const p2 = { x: inset + r, y: inset };
+        pt = getPointOnQuadraticBezier((d - sW - aL - sH - aL - sW - aL - sH) / aL, p0, p1, p2);
+      }
     }
 
+    // Center the orb on the calculated path point and apply scale
     const scale = 1 + scaleAmplitude * Math.sin(currentScaleProgress * 2 * Math.PI * scaleFrequency);
-    return { transform: [{ translateX: x }, { translateY: y }, { scale }] };
+    return {
+      transform: [
+        { translateX: pt.x - halfDot },
+        { translateY: pt.y - halfDot },
+        { scale },
+      ],
+    };
   });
 
   return (
@@ -290,7 +289,7 @@ const AnimatedGlowDot: FC<AnimatedGlowDotProps> = ({
 /**
  * A highly customizable animated glow effect wrapper for React Native components.
  */
-const AnimatedGlowWrapper: FC<AnimatedGlowWrapperProps> = (props) => {
+const AnimatedGlow: FC<AnimatedGlowProps> = (props) => {
   const { preset: presetObject = {}, children, style, ...overrideProps } = props;
 
   // Define default properties for the component
@@ -412,4 +411,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AnimatedGlowWrapper;
+export default AnimatedGlow;
