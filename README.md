@@ -29,9 +29,7 @@ Build your perfect glow effect with the live editor, browse tutorials, and copy 
 -   **Flexible Glow Placement:** Render glows `behind` (classic), `inside` (clipped), or `over` your component.
 -   **Animated Gradient Borders:** Pass an array of colors to `borderColor` for a beautiful, rotating gradient outline.
 -   **Variable Orb Sizes:** Provide an array to `dotSize` for organic, non-uniform effects.
--   **Extensive Presets:** Comes with 20+ professionally designed presets to get you started instantly.
--   **Easy to Use:** Wrap any component in `<AnimatedGlow>` to apply the effect.
--   **Backward Compatible:** Your V1 settings for `innerGlow` and `outerGlow` will still work perfectly.
+-   **Easy to Use:** Wrap any component in `<AnimatedGlow>` and configure it with a simple, typed props object.
 
 ## Installation
 
@@ -65,10 +63,10 @@ function MyComponent() {
     <AnimatedGlow
       cornerRadius={20}
       glowLayers={[
-        // A classic outer glow
+        // A classic outer glow with variable orb sizes
         {
           colors: ['#00FFFF', '#FF00FF'],
-          dotSize: [40, 100], // Orbs will have a variable size
+          dotSize: [40, 100], 
           opacity: 0.4,
           glowPlacement: 'behind',
         },
@@ -89,18 +87,56 @@ function MyComponent() {
 }
 ```
 
+### Creating a Preset (Recommended)
+
+For the best developer experience with type safety and autocomplete, define your styles in a separate object using the `PresetConfig` type. This makes your styles reusable and easy to manage.
+
+```typescript
+// in my-presets.ts
+import { type PresetConfig } from 'react-native-animated-glow';
+
+export const ripple: PresetConfig = {
+  cornerRadius: 70,
+  outlineWidth: 1,
+  borderColor: 'rgba(144, 84, 168, 1)',
+  backgroundColor: 'rgba(19, 19, 19, 1)',
+  glowLayers: [
+    // Outer, softer layer
+    {
+      colors: ['#d84fb6', '#5a4ff9'],
+      opacity: 0.4,
+      dotSize: 50,
+      numberOfOrbs: 40,
+      inset: 15,
+    },
+    // Inner, brighter layer
+    {
+      colors: ['#ff37cd', '#004fff'],
+      opacity: 1,
+      dotSize: 20,
+      numberOfOrbs: 60,
+      inset: 7,
+    },
+  ],
+};
+```
+
 ### Using a Preset
 
-```jsx
-import AnimatedGlow from 'react-native-animated-glow';
-// Presets must be imported from your own project files.
-// See the showcase app for examples.
-import { glowPresetsPro } from './path/to/your/presets';
+Now, import your preset and pass it to the `preset` prop. This keeps your component code clean and your styles consistent.
 
-function HotFlameButton() {
+```jsx
+// in MyButton.tsx
+import AnimatedGlow from 'react-native-animated-glow';
+import { ripple } from './my-presets';
+import { Text, TouchableOpacity } from 'react-native';
+
+function RippleButton() {
   return (
-    <AnimatedGlow preset={glowPresetsPro.hotFlame} cornerRadius={50}>
-      <Text style={{ fontSize: 40, padding: 20 }}>🔥</Text>
+    <AnimatedGlow preset={ripple}>
+      <TouchableOpacity style={{ padding: 20 }}>
+        <Text style={{ color: 'white', fontSize: 24 }}>💧</Text>
+      </TouchableOpacity>
     </AnimatedGlow>
   );
 }
@@ -111,14 +147,15 @@ function HotFlameButton() {
 | Prop                      | Type                               | Default  | Description                                                                                               |
 | ------------------------- | ---------------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
 | `children`                | `ReactNode`                        | -        | **Required.** The component to wrap.                                                                      |
-| `preset`                  | `object`                           | `{}`     | A preset object containing any of the other props.                                                        |
+| `preset`                  | `PresetConfig`                     | `{}`     | A preset object containing default values for any of the props.                                           |
 | `cornerRadius`            | `number`                           | `10`     | Border radius of the child wrapper; defines the glow path.                                                |
 | `outlineWidth`            | `number`                           | `2`      | The width of the visible border.                                                                          |
 | `borderColor`             | `string \| string[]`               | `white`  | The color of the border. Can be an array of colors to create an animated gradient border.                 |
+| `backgroundColor`         | `string`                           | `transparent` | The background color inside the border. Sits behind the child.                                            |
 | `animationSpeed`          | `number`                           | `0.7`    | A master speed control for all layers. Higher is faster.                                                  |
 | `borderSpeedMultiplier`   | `number`                           | `1.0`    | Controls the animation speed of the gradient border, independent of `animationSpeed`.                     |
 | `randomness`              | `number`                           | `0.01`   | Adds slight randomness to orb starting positions for a more organic look.                                 |
-| `glowLayers`              | `Array<GlowLayerConfig>`           | `[]`     | **The modern, recommended way to define glows.** An array of layer configuration objects.                 |
+| `glowLayers`              | `Array<Partial<GlowLayerConfig>>`  | `[]`     | **The recommended way to define glows.** An array of layer configuration objects.                         |
 | `style`                   | `StyleProp<ViewStyle>`             | -        | Style for the outermost container view.                                                                   |
 
 ### `GlowLayerConfig` Object
@@ -141,13 +178,14 @@ The `glowLayers` prop takes an array of these objects. All properties are option
 
 ## 🛠️ Performance Testing
 
-Wondering how a complex glow effect will perform on your target device? The library includes a built-in debugging component that you can easily drop into your app.
+Wondering how a complex glow effect will perform on your target device? The library includes a built-in debugging component that you can easily drop into your app to avoid bloating your production bundle.
 
 It runs an automated test, increasing the number of glow "orbs" and plotting the frames per second (FPS) on a graph.
 
 **Usage:**
 
 ```jsx
+// Import from the 'debug' entry point
 import { GlowDebugger } from 'react-native-animated-glow/debug';
 
 // Define the preset you want to test
@@ -159,10 +197,6 @@ function MyTestScreen() {
   return <GlowDebugger getPresetForOrbs={getMyPreset} />;
 }
 ```
-
-### Legacy Props
-
-For full backward compatibility, the original V1 props (`outerGlow...` and `innerGlow...`) are still supported. If the `glowLayers` prop is not provided, the component will construct layers from these props automatically.
 
 ---
 
