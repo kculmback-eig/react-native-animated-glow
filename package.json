@@ -1,6 +1,6 @@
 {
   "name": "react-native-animated-glow",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A fully customizable, performant, animated glow effect wrapper for any React Native component.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -28,7 +28,8 @@
     "neon",
     "button glow",
     "animated glow",
-    "glowing button"
+    "glowing button",
+    "inner glow"
   ],
   "author": "realimposter <support@imposterllc.com>",
   "license": "MIT",

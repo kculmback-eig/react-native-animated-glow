@@ -14,7 +14,7 @@
 
 ![React Native Animated Glow Demo](https://raw.githubusercontent.com/realimposter/react-native-animated-glow/main/assets/react-native-glow-demo.gif)
 
-A fully customizable, performant, animated glow effect wrapper for any React Native component, powered by Reanimated 2 and SVG.
+A fully customizable, performant, animated glow effect wrapper for any React Native component, powered by Reanimated and SVG.
 
 ## ✨ Live Demo & Builder
 
@@ -25,10 +25,13 @@ Build your perfect glow effect with the live editor, browse tutorials, and copy 
 ## Features
 
 -   **Highly Performant:** All animations run on the native UI thread thanks to React Native Reanimated.
--   **Fully Customizable:** Control colors, speed, size, opacity, shape, and more for two independent glow layers.
--   **Extensive Presets:** Comes with 20+ professionally designed presets like "Hot Flame", "Vaporwave", and "Neon Green" to get you started instantly.
+-   **Multi-Layer Effects:** Add an infinite number of glow layers for complex and beautiful effects.
+-   **Flexible Glow Placement:** Render glows `behind` (classic), `inside` (clipped), or `over` your component.
+-   **Animated Gradient Borders:** Pass an array of colors to `borderColor` for a beautiful, rotating gradient outline.
+-   **Variable Orb Sizes:** Provide an array to `dotSize` for organic, non-uniform effects.
+-   **Extensive Presets:** Comes with 20+ professionally designed presets to get you started instantly.
 -   **Easy to Use:** Wrap any component in `<AnimatedGlow>` to apply the effect.
--   **Lightweight:** No heavy dependencies outside of Reanimated and SVG.
+-   **Backward Compatible:** Your V1 settings for `innerGlow` and `outerGlow` will still work perfectly.
 
 ## Installation
 
@@ -36,15 +39,9 @@ Build your perfect glow effect with the live editor, browse tutorials, and copy 
 npm install react-native-animated-glow
 ```
 
-or
-
-```bash
-yarn add react-native-animated-glow
-```
-
 ### Peer Dependencies
 
-This library relies on `react-native-reanimated` and `react-native-svg`. You must install them and follow their respective setup instructions. This is the most common source of issues!
+This library relies on `react-native-reanimated` and `react-native-svg`. You must install them and follow their respective setup instructions.
 
 ```bash
 npm install react-native-reanimated react-native-svg
@@ -53,11 +50,11 @@ npm install react-native-reanimated react-native-svg
 -   [React Native Reanimated Installation Guide](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation)
 -   [React Native SVG Installation Guide](https://github.com/react-native-svg/react-native-svg#installation)
 
-For a complete walkthrough, check out the [Installation Guide](https://reactnativeglow.com) on our docs site.
-
 ## Usage
 
 ### Basic Example
+
+The `glowLayers` prop is the recommended way to create effects. Each object in the array defines a new layer.
 
 ```jsx
 import AnimatedGlow from 'react-native-animated-glow';
@@ -65,7 +62,25 @@ import { Text, View } from 'react-native';
 
 function MyComponent() {
   return (
-    <AnimatedGlow>
+    <AnimatedGlow
+      cornerRadius={20}
+      glowLayers={[
+        // A classic outer glow
+        {
+          colors: ['#00FFFF', '#FF00FF'],
+          dotSize: [40, 100], // Orbs will have a variable size
+          opacity: 0.4,
+          glowPlacement: 'behind',
+        },
+        // An inward glow, clipped by the component
+        {
+          colors: ['#FFFFFF'],
+          dotSize: 30,
+          opacity: 0.5,
+          glowPlacement: 'inside',
+        },
+      ]}
+    >
       <View style={{ padding: 20, backgroundColor: '#222' }}>
         <Text style={{ color: 'white' }}>I'm Glowing!</Text>
       </View>
@@ -76,11 +91,11 @@ function MyComponent() {
 
 ### Using a Preset
 
-The real power comes from using presets. The included preset file can be found in the demo app source code.
-
 ```jsx
 import AnimatedGlow from 'react-native-animated-glow';
-import { glowPresetsPro } from './path/to/your/presets'; // Get presets from the demo app
+// Presets must be imported from your own project files.
+// See the showcase app for examples.
+import { glowPresetsPro } from './path/to/your/presets';
 
 function HotFlameButton() {
   return (
@@ -91,42 +106,47 @@ function HotFlameButton() {
 }
 ```
 
-### Overriding a Preset
-
-You can easily override any value from a preset by passing it as a prop.
-
-```jsx
-<AnimatedGlow
-  preset={glowPresetsPro.hotFlame}
-  animationSpeed={5} // Makes the animation much faster
-  borderColor="cyan"
->
-  <Text>Fast Flame!</Text>
-</AnimatedGlow>
-```
-
 ## Props API
 
-All props are optional except for `children`. You can mix and match them to create unique effects or override values from a `preset`. For a full breakdown, please see the [interactive docs](https://reactnativeglow.com).
+| Prop                      | Type                               | Default  | Description                                                                                               |
+| ------------------------- | ---------------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `children`                | `ReactNode`                        | -        | **Required.** The component to wrap.                                                                      |
+| `preset`                  | `object`                           | `{}`     | A preset object containing any of the other props.                                                        |
+| `cornerRadius`            | `number`                           | `10`     | Border radius of the child wrapper; defines the glow path.                                                |
+| `outlineWidth`            | `number`                           | `2`      | The width of the visible border.                                                                          |
+| `borderColor`             | `string \| string[]`               | `white`  | The color of the border. Can be an array of colors to create an animated gradient border.                 |
+| `animationSpeed`          | `number`                           | `0.7`    | A master speed control for all layers. Higher is faster.                                                  |
+| `borderSpeedMultiplier`   | `number`                           | `1.0`    | Controls the animation speed of the gradient border, independent of `animationSpeed`.                     |
+| `randomness`              | `number`                           | `0.01`   | Adds slight randomness to orb starting positions for a more organic look.                                 |
+| `glowLayers`              | `Array<GlowLayerConfig>`           | `[]`     | **The modern, recommended way to define glows.** An array of layer configuration objects.                 |
+| `style`                   | `StyleProp<ViewStyle>`             | -        | Style for the outermost container view.                                                                   |
 
-| Prop                    | Type              | Default                            |
-| ----------------------- | ----------------- | ---------------------------------- |
-| `children`              | `node`            | **Required**                       |
-| `preset`                | `object`          | `{}`                               |
-| `cornerRadius`          | `number`          | `10`                               |
-| `outlineWidth`          | `number`          | `2`                                |
-| `borderColor`           | `string`          | `'white'`                          |
-| `animationSpeed`        | `number`          | `0.7`                              |
-| `outerGlowColors`       | `arrayOf(string)` | `['#00FFFF', '#FF00FF', '#FFFF00']` |
-| `innerGlowColors`       | `arrayOf(string)` | `['#00FFFF', '#FF00FF', '#FFFF00']` |
-| _...and many more!_     |                   |                                    |
+### `GlowLayerConfig` Object
 
+The `glowLayers` prop takes an array of these objects. All properties are optional except `colors`.
+
+| Prop              | Type                                | Default     | Description                                                                                               |
+| ----------------- | ----------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------- |
+| `colors`          | `string[]`                          | -           | **Required.** Array of colors for the glow gradient.                                                      |
+| `glowPlacement`   | `'behind' \| 'inside' \| 'over'`    | `'behind'`  | Where to render the layer: `behind` (classic), `inside` (clipped), or `over` (on top of the child).       |
+| `opacity`         | `number`                            | `0.5`       | Opacity of this specific layer (0-1).                                                                     |
+| `dotSize`         | `number \| number[]`                | `75`        | Diameter of the orbs. An array (`[min, max]`) creates variable-sized orbs.                                |
+| `numberOfOrbs`    | `number`                            | `20`        | The number of orbs to render for this layer.                                                              |
+| `inset`           | `number`                            | `15`        | Distance of the glow path from the component edge. Negative values push the path further out.             |
+| `speedMultiplier` | `number`                            | `1.0`       | Local speed multiplier for this layer.                                                                    |
+| `scaleAmplitude`  | `number`                            | `0`         | How much the orbs "pulse" in size (0 for none).                                                           |
+| `scaleFrequency`  | `number`                            | `2.5`       | How fast the orbs pulse.                                                                                  |
+| `coverage`        | `number`                            | `1.0`       | Portion of the perimeter covered by orbs (0 to 1). Useful for creating partial glows or "glimmer" effects. |
+
+### Legacy Props
+
+For full backward compatibility, the original V1 props (`outerGlow...` and `innerGlow...`) are still supported. If the `glowLayers` prop is not provided, the component will construct layers from these props automatically.
+
+---
 
 ## Contributing
 
-Contributions are welcome! If you have a feature request, bug report, or want to improve the library, please feel free to open an issue or submit a pull request on our [GitHub repository](https://github.com/realimposter/react-native-animated-glow).
-
-If you like the library, please give it a star ⭐ on GitHub! It helps a lot.
+Contributions are welcome! Please open an issue or submit a pull request on our [GitHub repository](https://github.com/realimposter/react-native-animated-glow).
 
 ## License
 
