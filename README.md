@@ -138,6 +138,27 @@ The `glowLayers` prop takes an array of these objects. All properties are option
 | `scaleFrequency`  | `number`                            | `2.5`       | How fast the orbs pulse.                                                                                  |
 | `coverage`        | `number`                            | `1.0`       | Portion of the perimeter covered by orbs (0 to 1). Useful for creating partial glows or "glimmer" effects. |
 
+
+## 🛠️ Performance Testing
+
+Wondering how a complex glow effect will perform on your target device? The library includes a built-in debugging component that you can easily drop into your app.
+
+It runs an automated test, increasing the number of glow "orbs" and plotting the frames per second (FPS) on a graph.
+
+**Usage:**
+
+```jsx
+import { GlowDebugger } from 'react-native-animated-glow/debug';
+
+// Define the preset you want to test
+const getMyPreset = (orbCount) => ({
+  glowLayers: [{ colors: ['#ff00ff'], numberOfOrbs: orbCount }]
+});
+
+function MyTestScreen() {
+  return <GlowDebugger getPresetForOrbs={getMyPreset} />;
+}```
+
 ### Legacy Props
 
 For full backward compatibility, the original V1 props (`outerGlow...` and `innerGlow...`) are still supported. If the `glowLayers` prop is not provided, the component will construct layers from these props automatically.
