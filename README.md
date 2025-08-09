@@ -157,7 +157,8 @@ const getMyPreset = (orbCount) => ({
 
 function MyTestScreen() {
   return <GlowDebugger getPresetForOrbs={getMyPreset} />;
-}```
+}
+```
 
 ### Legacy Props
 
