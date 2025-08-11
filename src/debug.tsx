@@ -9,47 +9,54 @@ type TestResult = {
   fps: number;
 };
 
-// A self-contained, un-themed graph component with the corrected layout.
+// A self-contained, un-themed graph component.
 const PerformanceGraph = ({ data, title, subtitle }: { data: TestResult[], title: string, subtitle: string }) => {
-    if (!data || data.length === 0) return null;
-    const maxFps = Math.max(...data.map(d => d.fps), 60);
-    const Y_AXIS_TICKS = 5;
-    const MAX_X_AXIS_LABELS = 10;
-    const labelStride = data.length > MAX_X_AXIS_LABELS ? Math.ceil(data.length / MAX_X_AXIS_LABELS) : 1;
-    const yAxisLabels = Array.from({ length: Y_AXIS_TICKS + 1 }, (_, i) => Math.round((maxFps / Y_AXIS_TICKS) * i));
-    return (
-      <View style={graphStyles.graphContainer}>
-        <Text style={graphStyles.title}>{title}</Text>
-        <Text style={graphStyles.subtitle}>{subtitle}</Text>
-        <View style={graphStyles.graphLayout}>
-          <View style={graphStyles.yAxisContainer}>
-            {yAxisLabels.reverse().map(label => (
-              <Text key={label} style={graphStyles.yAxisLabel}>{label} -</Text>
+  if (!data || data.length === 0) return null;
+  const maxFps = Math.max(...data.map(d => d.fps), 60);
+  const Y_AXIS_TICKS = 5;
+  const MAX_X_AXIS_LABELS = 10;
+  const labelStride = data.length > MAX_X_AXIS_LABELS ? Math.ceil(data.length / MAX_X_AXIS_LABELS) : 1;
+  const yAxisLabels = Array.from({ length: Y_AXIS_TICKS + 1 }, (_, i) => Math.round((maxFps / Y_AXIS_TICKS) * i));
+
+  return (
+    <View style={graphStyles.graphContainer}>
+      <Text style={graphStyles.title}>{title}</Text>
+      <Text style={graphStyles.subtitle}>{subtitle}</Text>
+      <View style={graphStyles.graphLayout}>
+        {/* Y-Axis Labels */}
+        <View style={graphStyles.yAxisContainer}>
+          {yAxisLabels.reverse().map(label => (
+            <Text key={label} style={graphStyles.yAxisLabel}>{label} -</Text>
+          ))}
+        </View>
+
+        {/* Container for Graph Bars + X-Axis Labels */}
+        <View style={{ flex: 1 }}>
+          {/* Graph Bars */}
+          <View style={graphStyles.graph}>
+            {data.map((result, index) => (
+              <View key={index} style={graphStyles.barWrapper}>
+                <View style={[graphStyles.bar, { height: `${(result.fps / maxFps) * 100}%`, backgroundColor: result.fps > 50 ? '#4CAF50' : result.fps > 25 ? '#FFC107' : '#F44336' }]}>
+                  <Text style={graphStyles.barValue}>{result.fps}</Text>
+                </View>
+              </View>
             ))}
           </View>
-          <View style={{ flex: 1 }}>
-            <View style={graphStyles.graph}>
-              {data.map((result, index) => (
-                <View key={index} style={graphStyles.barWrapper}>
-                  <View style={[graphStyles.bar, { height: `${(result.fps / maxFps) * 100}%`, backgroundColor: result.fps > 50 ? '#4CAF50' : result.fps > 25 ? '#FFC107' : '#F44336' }]}>
-                    <Text style={graphStyles.barValue}>{result.fps}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-            <View style={graphStyles.xAxisRow}>
-              {data.map((result, index) => (
-                <View key={index} style={graphStyles.xAxisLabelCell}>
-                  {index % labelStride === 0 && (
-                    <Text style={graphStyles.barLabel}>{result.orbs}</Text>
-                  )}
-                </View>
-              ))}
-            </View>
+
+          {/* Separate Row for X-Axis Labels */}
+          <View style={graphStyles.xAxisRow}>
+            {data.map((result, index) => (
+              <View key={index} style={graphStyles.xAxisLabelCell}>
+                {index % labelStride === 0 && (
+                  <Text style={graphStyles.barLabel}>{result.orbs}</Text>
+                )}
+              </View>
+            ))}
           </View>
         </View>
       </View>
-    );
+    </View>
+  );
 };
   
 const defaultGetPresetForOrbs = (orbCount: number): PresetConfig => ({
@@ -81,7 +88,7 @@ export const GlowDebugger = ({
   const [isRecording, setIsRecording] = useState(false);
   const [currentOrbCount, setCurrentOrbCount] = useState(0);
   const [results, setResults] = useState<TestResult[]>([]);
-  const [statusMessage, setStatusMessage] = useState('Press "Start Test" to begin.');
+  const [statusMessage, setStatusMessage] = useState('Press "Start Test" to begin performance analysis.');
   const presetGenerator = getPresetForOrbs || defaultGetPresetForOrbs;
   const { getAverage, reset } = useFpsRecorder(isRecording);
 
@@ -102,7 +109,7 @@ export const GlowDebugger = ({
       const avgFps = getAverage();
       setResults(prev => [...prev, { orbs, fps: avgFps }]);
     }
-    setStatusMessage('Test complete!');
+    setStatusMessage('Test complete! See the graph below.');
     setIsRecording(false);
     setCurrentOrbCount(0);
   };
@@ -126,7 +133,14 @@ export const GlowDebugger = ({
 };
 
 // Component-specific styles
-const styles = StyleSheet.create({ debuggerContainer: { width: '100%', alignItems: 'center', paddingVertical: 20 }, testArea: { flexDirection: 'row', justifyContent: 'space-around', width: '100%', minHeight: 120, marginVertical: 30, alignItems: 'center' }, box: { width: 80, height: 80, backgroundColor: '#222' }, button: { paddingVertical: 12, paddingHorizontal: 30, borderRadius: 8, alignItems: 'center' }, buttonText: { color: 'white', fontWeight: 'bold', fontSize: 16 }, statusText: { marginTop: 15, fontStyle: 'italic', textAlign: 'center', color: '#888' } });
+const styles = StyleSheet.create({
+  debuggerContainer: { width: '100%', alignItems: 'center', paddingVertical: 20 },
+  testArea: { flexDirection: 'row', justifyContent: 'space-around', width: '100%', minHeight: 120, marginVertical: 30, alignItems: 'center' },
+  box: { width: 80, height: 80, backgroundColor: '#222' },
+  button: { paddingVertical: 12, paddingHorizontal: 30, borderRadius: 8, alignItems: 'center' },
+  buttonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
+  statusText: { marginTop: 15, fontStyle: 'italic', textAlign: 'center', color: '#888' },
+});
 
 // Graph-specific styles
 const graphStyles = StyleSheet.create({
@@ -140,7 +154,20 @@ const graphStyles = StyleSheet.create({
   barWrapper: { flex: 1, alignItems: 'center', height: '100%', paddingHorizontal: 2, justifyContent: 'flex-end' },
   bar: { width: '100%', borderRadius: 4, justifyContent: 'flex-start', alignItems: 'center', overflow: 'hidden' },
   barValue: { paddingTop: 4, color: 'white', fontSize: 10, fontWeight: 'bold', textShadowColor: 'rgba(0, 0, 0, 0.5)', textShadowOffset: { width: 1, height: 1 }, textShadowRadius: 2 },
-  xAxisRow: { flexDirection: 'row', height: 20, marginTop: 4, borderLeftWidth: 1, borderColor: '#ccc' },
-  xAxisLabelCell: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  barLabel: { fontSize: 10, color: '#999' },
+  xAxisRow: {
+    flexDirection: 'row',
+    height: 20, 
+    marginTop: 4,
+    borderLeftWidth: 1,
+    borderColor: '#ccc',
+  },
+  xAxisLabelCell: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  barLabel: { 
+    fontSize: 10, 
+    color: '#999' 
+  },
 });

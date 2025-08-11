@@ -21,6 +21,7 @@ export const useFpsRecorder = (isRecording: boolean) => {
       return;
     }
 
+    // Reset timestamp and samples when recording starts
     lastTimestamp.current = performance.now();
     samples.current = [];
 
@@ -28,10 +29,12 @@ export const useFpsRecorder = (isRecording: boolean) => {
       const delta = now - lastTimestamp.current;
       lastTimestamp.current = now;
 
+      // Avoid division by zero and extreme deltas on the first frame
       if (delta > 0 && delta < 1000) {
         const currentFps = 1000 / delta;
         samples.current.push(currentFps);
       }
+
       animationFrameId.current = requestAnimationFrame(loop);
     };
 
@@ -44,16 +47,28 @@ export const useFpsRecorder = (isRecording: boolean) => {
     };
   }, [isRecording]);
 
+  /**
+   * Calculates the average FPS from the collected samples, excluding outliers.
+   * @returns The rounded average FPS.
+   */
   const getAverage = () => {
-    if (samples.current.length < 10) return 0;
+    if (samples.current.length < 10) return 0; // Not enough data
+
+    // Sort samples to remove top and bottom 10% as outliers
     const sortedSamples = [...samples.current].sort((a, b) => a - b);
     const tenPercent = Math.floor(sortedSamples.length * 0.1);
-    const filteredSamples = sortedSamples.slice(tenPercent, -tenPercent);
+    const filteredSamples = sortedSamples.slice(tenPercent, sortedSamples.length - tenPercent);
+
     if (filteredSamples.length === 0) return 0;
+
     const sum = filteredSamples.reduce((acc, val) => acc + val, 0);
-    return Math.round(sum / filteredSamples.length);
+    const average = sum / filteredSamples.length;
+    return Math.round(average);
   };
 
+  /**
+   * Clears all collected FPS samples.
+   */
   const reset = () => {
     samples.current = [];
   };
