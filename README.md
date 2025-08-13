@@ -14,7 +14,7 @@
 
 ![React Native Animated Glow Demo](https://raw.githubusercontent.com/realimposter/react-native-animated-glow/main/assets/react-native-glow-demo.gif)
 
-A highly customizable, performant, animated glow effect component for React Native, built with Reanimated and `expo-image`.
+A highly customizable, performant, animated glow effect component for React Native, built with the built-in Animated API.
 
 ## ✨ Live Demo & Builder
 
@@ -24,7 +24,7 @@ Build your perfect glow effect with the live editor, browse tutorials, and copy 
 
 ## Features
 
--   **Highly Performant:** Uses `expo-image` for hardware-accelerated orb rendering, and all animations run on the native UI thread thanks to Reanimated.
+-   **Simple & Performant:** Built with the core `Animated` API for smooth animations. No complex dependencies like Reanimated needed.
 -   **Multi-Layer Effects:** Stack multiple `glowLayers` for complex and beautiful effects like the Apple Intelligence UI.
 -   **Flexible Glow Placement:** Render glows `behind` (classic), `inside` (clipped), or `over` your component.
 -   **Animated Gradient Borders:** Pass an array of colors to `borderColor` for a beautiful, rotating gradient outline.
@@ -37,17 +37,17 @@ Build your perfect glow effect with the live editor, browse tutorials, and copy 
 npm install react-native-animated-glow
 ```
 
-### Peer Dependencies
+### Peer Dependency
 
-This library relies on `react-native-reanimated`, `react-native-svg`, and `expo-image`. You must install them and follow their respective setup instructions, especially for Reanimated's Babel plugin.
+For the animated gradient border feature, this library relies on `react-native-svg`. You must install it and follow its setup instructions.
 
 ```bash
-npm install react-native-reanimated react-native-svg expo-image
+npm install react-native-svg
 ```
 
--   [React Native Reanimated Installation Guide](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation)
 -   [React Native SVG Installation Guide](https://github.com/react-native-svg/react-native-svg#installation)
--   [Expo Image Installation Guide](https://docs.expo.dev/versions/latest/sdk/image/)
+
+That's it! No Babel plugin or other complex configuration is required.
 
 ## Usage
 
@@ -135,6 +135,7 @@ function IceButton() {
 | `children`                | `ReactNode`                        | -             | **Required.** The component to wrap.                                                                      |
 | `preset`                  | `PresetConfig`                     | `{}`          | A preset object containing default values for any of the props.                                           |
 | `isVisible`               | `boolean`                          | `true`        | Controls whether the animations are active. Set to `false` to pause all animations for performance.       |
+| `engine`                  | `'image' \| 'svg'`                 | `'image'`     | Orb rendering engine. `image` (default) is a performant PNG, `svg` uses a radial gradient.                |
 | `cornerRadius`            | `number`                           | `10`          | Border radius of the child wrapper; defines the glow path.                                                |
 | `outlineWidth`            | `number`                           | `2`           | The width of the visible border.                                                                          |
 | `borderColor`             | `string \| string[]`               | `'white'`     | The color of the border. Can be an array of colors to create an animated gradient border.                 |
