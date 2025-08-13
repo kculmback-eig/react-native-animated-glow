@@ -13,6 +13,9 @@ example/presets/glow-presets-pro.js
 # General
 # ===================================================================
 
+# ignore .vscode folder
+.vscode/
+
 # Dependency directories
 # These are installed by package managers and should never be committed.
 node_modules/
