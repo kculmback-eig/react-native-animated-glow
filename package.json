@@ -1,9 +1,10 @@
-{
+  {
   "name": "react-native-animated-glow",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A fully customizable, performant, animated glow effect wrapper for any React Native component.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "react-native": "lib/index.js",
   "files": [
     "lib/",
     "assets/",
@@ -13,10 +14,12 @@
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
+      "react-native": "./lib/index.js",
       "require": "./lib/index.js"
     },
     "./debug": {
       "types": "./lib/debug.d.ts",
+      "react-native": "./lib/debug.js",
       "require": "./lib/debug.js"
     }
   },
