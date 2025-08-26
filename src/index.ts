@@ -1,9 +1,18 @@
 // src/index.ts
 
-// Re-export the types using the `export type` syntax.
-// This tells the compiler these are not runtime values.
-export type { PresetConfig, AnimatedGlowProps, GlowLayerConfig } from './AnimatedGlow';
+// Re-export all necessary types for consumers.
+export type { 
+  PresetConfig, 
+  AnimatedGlowProps, 
+  GlowLayerConfig,
+  GlowEvent,
+  GlowState,
+  GlowPlacement,
+} from './animated-glow/types';
 
-// Import and export the component (a runtime value) as the default.
+// Export the presets object.
+export { glowPresets } from './glow-presets';
+
+// Import and export the component as the default.
 import AnimatedGlow from './AnimatedGlow';
 export default AnimatedGlow;

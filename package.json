@@ -1,13 +1,12 @@
-  {
+{
   "name": "react-native-animated-glow",
-  "version": "1.4.2",
-  "description": "A fully customizable, performant, animated glow effect wrapper for any React Native component.",
+  "version": "2.0.0",
+  "description": "A performant, highly-customizable animated glow effect for React Native, powered by Skia and Reanimated.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "react-native": "lib/index.js",
   "files": [
     "lib/",
-    "assets/",
     "README.md",
     "LICENSE"
   ],
@@ -17,10 +16,10 @@
       "react-native": "./lib/index.js",
       "require": "./lib/index.js"
     },
-    "./debug": {
-      "types": "./lib/debug.d.ts",
-      "react-native": "./lib/debug.js",
-      "require": "./lib/debug.js"
+    "./presets": {
+      "types": "./lib/glow-presets.d.ts",
+      "react-native": "./lib/glow-presets.js",
+      "require": "./lib/glow-presets.js"
     }
   },
   "scripts": {
@@ -34,19 +33,20 @@
   },
   "keywords": [
     "react-native",
+    "skia",
+    "reanimated",
     "glow",
     "animation",
     "animated",
-    "svg",
     "border",
     "effect",
-    "wrapper",
     "neon",
     "button glow",
     "animated glow",
     "glowing button",
     "inner glow",
-    "apple intelligence"
+    "apple intelligence",
+    "gradient"
   ],
   "author": "realimposter <support@imposterllc.com>",
   "license": "MIT",
@@ -57,10 +57,19 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-svg": ">=15.0.0"
+    "@shopify/react-native-skia": ">=0.2.0",
+    "react-native-reanimated": ">=3.0.0",
+    "react-native-gesture-handler": ">=2.0.0"
+  },
+  "dependencies": {
+    "canvaskit-wasm": "0.39.1"
   },
   "devDependencies": {
-    "@types/react": "^18.0.0",
-    "typescript": "^5.0.0"
+    "@types/react": "^19.0.0", 
+    "typescript": "^5.0.0",
+    "react": "^19.0.0",
+    "@shopify/react-native-skia": ">=0.2.0",
+    "react-native-reanimated": ">=3.0.0",
+    "react-native-gesture-handler": ">=2.0.0"
   }
 }
