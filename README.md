@@ -14,7 +14,7 @@
 
 A performant, highly-customizable animated glow effect component for React Native, powered by **Skia** and **Reanimated 3**.
 
-![React Native Glow Demo](https://github.com/realimposter/react-native-glow/assets/13600946/a62bd134-f86a-4d26-897c-e3505e83ca51)
+![React Native Animated Glow Demo](https://raw.githubusercontent.com/realimposter/react-native-animated-glow/main/assets/react-native-glow-demo.gif)
 
 ## Live Demo & Builder
 
@@ -22,7 +22,7 @@ Check out the **[live web demo and interactive builder](https://reactnativeglow.
 
 ## Features
 
--   **GPU-Powered Performance:** Built with Skia for silky-smooth, 60 FPS animations that run on the UI thread.
+-   **GPU-Powered Performance:** Built with Skia for smooth, 60 FPS animations that run on the UI thread.
 -   **Interactive:** Responds to `hover` and `press` events with configurable transitions using Reanimated & Gesture Handler.
 -   **Highly Customizable:** Control colors, speed, shape, size, opacity, and more through a flexible `glowLayers` API.
 -   **Advanced Effects:**
@@ -59,7 +59,7 @@ You must follow the installation guides for the peer dependencies to ensure they
 - [Reanimated Docs](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation) (Remember to add the Babel plugin!)
 - [Gesture Handler Docs](https://docs.swmansion.com/react-native-gesture-handler/docs/installation) (Remember to add `GestureHandlerRootView`!)
 
-## 💡 Usage
+## Usage
 
 ### Basic Example
 
@@ -126,11 +126,11 @@ const MyButton = () => (
 );
 ```
 
-## ⚙️ API Reference
+## API Reference
 
 For a complete list of all available props and their descriptions, please see the **[Docs Tab](https://reactnativeglow.com/docs)** in the live demo app.
 
-## 📜 Changelog
+## Changelog
 
 ### `v2.0.0` (Current Version)
 This version marks a complete architectural rewrite for maximum performance and flexibility.
