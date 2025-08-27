@@ -56,8 +56,8 @@ yarn add @shopify/react-native-skia react-native-reanimated react-native-gesture
 
 You must follow the installation guides for the peer dependencies to ensure they are configured correctly for your project.
 - [React Native Skia Docs](https://shopify.github.io/react-native-skia/docs/getting-started/installation)
-- [Reanimated Docs](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation) (Remember to add the Babel plugin!)
-- [Gesture Handler Docs](https://docs.swmansion.com/react-native-gesture-handler/docs/installation) (Remember to add `GestureHandlerRootView`!)
+- [Reanimated Docs](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/#installation) (Remember to add the Babel plugin!)
+- [Gesture Handler Docs](https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation) (Remember to add `GestureHandlerRootView`!)
 
 ## Usage
 
