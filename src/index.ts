@@ -3,11 +3,13 @@
 // Re-export all necessary types for consumers.
 export type { 
   PresetConfig, 
+  GlowConfig,
   AnimatedGlowProps, 
   GlowLayerConfig,
   GlowEvent,
   GlowState,
   GlowPlacement,
+  PresetMetadata,
 } from './animated-glow/types';
 
 // Export the presets object.

@@ -16,14 +16,34 @@ export interface PresetMetadata {
   tags: string[];
 }
 
-// --- NEW: State Management Types ---
+// --- NEW: GlowConfig to hold all visual properties ---
+export interface GlowConfig {
+  textColor?: string;
+  cornerRadius?: number;
+  outlineWidth?: number;
+  borderColor?: string | string[];
+  backgroundColor?: string;
+  animationSpeed?: number;
+  borderSpeedMultiplier?: number;
+  glowLayers?: Partial<GlowLayerConfig>[];
+}
+
+// --- NEW: State Management Types (Updated Structure) ---
 export type GlowEvent = 'default' | 'hover' | 'press';
 
 export interface GlowState {
   name: GlowEvent;
-  preset: Partial<PresetConfig>;
-  transition?: number; // Duration in ms
+  // For 'default', preset is a complete GlowConfig. For others, it's a partial override.
+  preset: Partial<GlowConfig>;
+  transition?: number; // Duration in ms, only for non-default states
 }
+
+// --- NEW: Top-level PresetConfig Structure ---
+export interface PresetConfig {
+  metadata: PresetMetadata;
+  states: GlowState[]; // Must contain at least one 'default' state
+}
+
 
 // --- Configuration Types (Updated) ---
 export interface GlowLayerConfig {
@@ -31,36 +51,22 @@ export interface GlowLayerConfig {
   opacity: number;
   glowSize: number | number[];
   speedMultiplier: number;
-  scaleAmplitude: number;
-  scaleFrequency: number;
   glowPlacement: GlowPlacement;
   coverage: number;
   relativeOffset?: number;
 }
 
-export interface PresetConfig {
-  metadata?: PresetMetadata;
-  textColor?: string;
-  cornerRadius?: number;
-  outlineWidth?: number;
-  borderColor?: string | string[];
-  backgroundColor?: string;
-  animationSpeed?: number;
-  randomness?: number;
-  borderSpeedMultiplier?: number;
-  glowLayers?: Partial<GlowLayerConfig>[];
-  states?: GlowState[];
-}
-
 // --- Prop Types ---
-export interface AnimatedGlowProps extends Partial<Omit<PresetConfig, 'metadata' | 'textColor'>> {
-  preset?: PresetConfig;
+// AnimatedGlowProps can accept a legacy preset or individual override props
+export interface AnimatedGlowProps extends Partial<GlowConfig> {
+  preset?: Partial<PresetConfig> & Partial<GlowConfig>; // Allow legacy and new preset shapes
   states?: GlowState[];
   initialState?: GlowEvent;
-  children: ReactNode;
+  children: ReactNode; // This is the required child prop
   style?: StyleProp<ViewStyle>;
   isVisible?: boolean;
 }
 
 // --- Utility Types ---
 export type Layout = { width: number; height: number };
+export type RGBColor = { r: number; g: number; b: number };
