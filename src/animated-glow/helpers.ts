@@ -1,8 +1,5 @@
-// src/animated-glow/helpers.ts
-
 import type { RGBColor } from './types';
 
-// --- Worklet to parse hex/rgb color strings ---
 export const parseColorToRgbWorklet = (color: string): RGBColor => {
     'worklet';
     const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
@@ -17,10 +14,9 @@ export const parseColorToRgbWorklet = (color: string): RGBColor => {
       const b = parseInt(hex.substring(4, 6), 16);
       return { r, g, b };
     }
-    return { r: 0, g: 0, b: 0 }; // Default to black if parsing fails
+    return { r: 0, g: 0, b: 0 };
 };
 
-// --- Worklet to parse full RGBA color strings ---
 export const parseColorToRgbaWorklet = (color: string): {r: number, g: number, b: number, a: number} => {
     'worklet';
     if (!color || color === 'transparent') {
@@ -37,13 +33,13 @@ export const parseColorToRgbaWorklet = (color: string): {r: number, g: number, b
     }
     let hex = color.startsWith('#') ? color.substring(1) : color;
     if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-    if (hex.length === 8) { // RRGGBBAA
+    if (hex.length === 8) {
       return { r: parseInt(hex.substring(0, 2), 16), g: parseInt(hex.substring(2, 4), 16), b: parseInt(hex.substring(4, 6), 16), a: parseInt(hex.substring(6, 8), 16) / 255 };
     }
-    if (hex.length === 6) { // RRGGBB
+    if (hex.length === 6) {
       return { r: parseInt(hex.substring(0, 2), 16), g: parseInt(hex.substring(2, 4), 16), b: parseInt(hex.substring(4, 6), 16), a: 1.0 };
     }
-    return { r: 0, g: 0, b: 0, a: 0 }; // Default to transparent black
+    return { r: 0, g: 0, b: 0, a: 0 };
 };
   
 export const interpolateColorWorklet = (color1: RGBColor, color2: RGBColor, factor: number): RGBColor => { 'worklet'; if (!color1 || !color2) { return color1 || color2 || { r: 0, g: 0, b: 0 }; } const r = Math.round(color1.r + factor * (color2.r - color1.r)); const g = Math.round(color1.g + factor * (color2.g - color1.g)); const b = Math.round(color1.b + factor * (color2.b - color1.b)); return { r, g, b }; };

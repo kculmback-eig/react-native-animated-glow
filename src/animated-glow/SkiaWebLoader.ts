@@ -1,5 +1,3 @@
-// src/animated-glow/SkiaWebLoader.ts
-
 type SkiaWebState = { status: 'ready'; subscribers: Set<() => void>; };
 
 export const skiaWebState: SkiaWebState = {
@@ -7,5 +5,4 @@ export const skiaWebState: SkiaWebState = {
   subscribers: new Set(),
 };
 
-// This function does nothing on native.
 export const ensureSkiaWebLoaded = () => {};

@@ -1,5 +1,3 @@
-// src/animated-glow/UnifiedSkiaGlow.tsx
-
 import React, { FC, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Canvas, Fill, Skia, Shader, type SkRuntimeEffect } from "@shopify/react-native-skia";
@@ -120,7 +118,6 @@ const sksl = `
 
 const processColorsWorklet = (colors: RGBColor[]): number[] => { 'worklet'; if (colors.length === 0) return Array(8 * 4).fill(0); const seamless = colors.length > 1 ? [...colors, colors[0]] : [...colors, ...colors]; const finalColors: number[] = []; for (let i = 0; i < 8; i++) { const p = i / 7.0; const c = getGradientColorWorklet(p, seamless); finalColors.push(c.r / 255, c.g / 255, c.b / 255, 1.0); } return finalColors; };
 
-// --- FIX: Export this interface ---
 export interface UnifiedSkiaGlowProps { 
   layout: Layout; 
   masterOpacity: SharedValue<number>; 
@@ -132,8 +129,13 @@ export interface UnifiedSkiaGlowProps {
 const GLOW_CANVAS_MARGIN = 100;
 
 export const UnifiedSkiaGlow: FC<UnifiedSkiaGlowProps> = ({ layout, masterOpacity, progress, fromConfig, toConfig }) => {
-    const animatedEffect = useMemo((): SkRuntimeEffect | null => (Skia?.RuntimeEffect ? Skia.RuntimeEffect.Make(sksl) : null), []);
-    
+    const animatedEffect = useMemo((): SkRuntimeEffect | null => {
+        if (Skia.RuntimeEffect) {
+            return Skia.RuntimeEffect.Make(sksl);
+        }
+        return null;
+    }, []);
+
     const borderProgress = useSharedValue(0);
     const layerProgress = useSharedValue(Array(MAX_SKIA_LAYERS).fill(0));
     
@@ -142,14 +144,11 @@ export const UnifiedSkiaGlow: FC<UnifiedSkiaGlowProps> = ({ layout, masterOpacit
         const p = progress.value;
         const from = fromConfig.value;
         const to = toConfig.value;
-
         const animSpeed = interpolateNumber(from.animationSpeed ?? 0.7, to.animationSpeed ?? 0.7, p);
         const borderSpeedMult = interpolateNumber(from.borderSpeedMultiplier ?? 1.0, to.borderSpeedMultiplier ?? 1.0, p);
-
         const layerSpeedMults = [];
         const toLayers = to.glowLayers ?? [];
         const fromLayers = from.glowLayers ?? [];
-
         for (let i = 0; i < MAX_SKIA_LAYERS; i++) {
             if (i >= toLayers.length) {
                 layerSpeedMults.push(0);
@@ -159,21 +158,17 @@ export const UnifiedSkiaGlow: FC<UnifiedSkiaGlowProps> = ({ layout, masterOpacit
             const toLayer = toLayers[i] ?? {};
             layerSpeedMults.push(interpolateNumber(fromLayer.speedMultiplier ?? (toLayer.speedMultiplier ?? 1.0), toLayer.speedMultiplier ?? 1.0, p));
         }
-        
         return { animSpeed, borderSpeedMult, layerSpeedMults };
     });
 
     useFrameCallback((frameInfo) => {
         'worklet';
         if (frameInfo.timeSincePreviousFrame === null) return;
-        
         const deltaTime = frameInfo.timeSincePreviousFrame / 1000;
         const speeds = interpolatedSpeeds.value;
         const speedFactor = 0.166;
-        
         const borderDelta = deltaTime * speedFactor * speeds.animSpeed * speeds.borderSpeedMult;
         borderProgress.value = (borderProgress.value + borderDelta) % 1.0;
-
         const currentLayerProgress = [...layerProgress.value];
         for (let i = 0; i < MAX_SKIA_LAYERS; i++) {
             const layerDelta = deltaTime * speedFactor * speeds.animSpeed * speeds.layerSpeedMults[i];
@@ -187,23 +182,18 @@ export const UnifiedSkiaGlow: FC<UnifiedSkiaGlowProps> = ({ layout, masterOpacit
         const p = progress.value;
         const from = fromConfig.value;
         const to = toConfig.value;
-
         const cornerRadius = interpolateNumber(from.cornerRadius ?? 10, to.cornerRadius ?? 10, p);
         const outlineWidth = interpolateNumber(from.outlineWidth ?? 2, to.outlineWidth ?? 2, p);
-
         const fromBg = parseColorToRgbaWorklet(from.backgroundColor ?? 'transparent');
         const toBg = parseColorToRgbaWorklet(to.backgroundColor ?? 'transparent');
         const iBg = interpolateRgbaWorklet(fromBg, toBg, p);
         const backgroundColor = [iBg.r / 255, iBg.g / 255, iBg.b / 255, iBg.a];
-
         const coverage: number[] = [], glowSizes: number[] = [], opacity: number[] = [],
               relativeOffset: number[] = [], placements: number[] = [];
         const layerColors: number[][] = [];
-
         const fromLayers = from.glowLayers ?? [];
         const toLayers = to.glowLayers ?? [];
         const layerCount = toLayers.length;
-
         for (let i = 0; i < MAX_SKIA_LAYERS; i++) {
             if (i >= layerCount) {
                 coverage.push(0); opacity.push(0); relativeOffset.push(0); placements.push(0);
@@ -249,7 +239,9 @@ export const UnifiedSkiaGlow: FC<UnifiedSkiaGlowProps> = ({ layout, masterOpacit
         };
     }, [layout, progress, fromConfig, toConfig, masterOpacity]);
 
-    if (!animatedEffect || layout.width <= 0 || layout.height <= 0) return null;
+    if (!animatedEffect || layout.width <= 0 || layout.height <= 0) {
+        return null;
+    }
 
     return (
         <View style={[StyleSheet.absoluteFill, { left: -GLOW_CANVAS_MARGIN, top: -GLOW_CANVAS_MARGIN, width: layout.width + GLOW_CANVAS_MARGIN * 2, height: layout.height + GLOW_CANVAS_MARGIN * 2 }]} pointerEvents="none">

@@ -1,12 +1,11 @@
-// src/animated-glow/SkiaWebLoader.web.ts
-
 import { Platform } from 'react-native';
 import { LoadSkiaWeb } from '@shopify/react-native-skia/lib/module/web';
-import { version } from 'canvaskit-wasm/package.json';
+
+const skiaPackageJson = require('@shopify/react-native-skia/package.json');
+const canvasKitVersion = skiaPackageJson.dependencies['canvaskit-wasm'];
 
 type SkiaWebState = { status: 'idle' | 'loading' | 'ready'; subscribers: Set<() => void>; };
 
-// The state starts as 'idle' on web
 export const skiaWebState: SkiaWebState = {
   status: 'idle',
   subscribers: new Set(),
@@ -23,10 +22,10 @@ export const ensureSkiaWebLoaded = () => {
   skiaWebState.status = 'loading';
 
   LoadSkiaWeb({
-    locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/canvaskit-wasm@${version}/bin/full/${file}`
+    locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/canvaskit-wasm@${canvasKitVersion}/bin/full/${file}`
   }).then(() => {
     skiaWebState.status = 'ready';
     skiaWebState.subscribers.forEach(callback => callback());
-    skiaWebState.subscribers.clear(); // Clean up after notifying
-  }).catch(console.error);
+    skiaWebState.subscribers.clear();
+  }).catch((err) => {});
 };

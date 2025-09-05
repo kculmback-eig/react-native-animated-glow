@@ -1,0 +1,14 @@
+// tsconfig.build.json
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false
+  },
+  "include": [
+    "src" // This must point to your source directory
+  ],
+  "exclude": [
+    "node_modules",
+    "lib"
+  ]
+}

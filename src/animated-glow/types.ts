@@ -1,12 +1,8 @@
-// src/animated-glow/types.ts
-
 import { StyleProp, ViewStyle } from 'react-native';
 import { ReactNode } from 'react';
 
-// --- Core Type Definitions ---
 export type GlowPlacement = 'inside' | 'over' | 'behind';
 
-// --- NEW: Metadata Type Definition ---
 export interface PresetMetadata {
   name: string;
   textColor: string;
@@ -16,7 +12,6 @@ export interface PresetMetadata {
   tags: string[];
 }
 
-// --- NEW: GlowConfig to hold all visual properties ---
 export interface GlowConfig {
   textColor?: string;
   cornerRadius?: number;
@@ -28,24 +23,19 @@ export interface GlowConfig {
   glowLayers?: Partial<GlowLayerConfig>[];
 }
 
-// --- NEW: State Management Types (Updated Structure) ---
 export type GlowEvent = 'default' | 'hover' | 'press';
 
 export interface GlowState {
   name: GlowEvent;
-  // For 'default', preset is a complete GlowConfig. For others, it's a partial override.
   preset: Partial<GlowConfig>;
-  transition?: number; // Duration in ms, only for non-default states
+  transition?: number;
 }
 
-// --- NEW: Top-level PresetConfig Structure ---
 export interface PresetConfig {
-  metadata: PresetMetadata;
-  states: GlowState[]; // Must contain at least one 'default' state
+  metadata?: PresetMetadata;
+  states: GlowState[];
 }
 
-
-// --- Configuration Types (Updated) ---
 export interface GlowLayerConfig {
   colors: string[];
   opacity: number;
@@ -56,17 +46,15 @@ export interface GlowLayerConfig {
   relativeOffset?: number;
 }
 
-// --- Prop Types ---
-// AnimatedGlowProps can accept a legacy preset or individual override props
 export interface AnimatedGlowProps extends Partial<GlowConfig> {
-  preset?: Partial<PresetConfig> & Partial<GlowConfig>; // Allow legacy and new preset shapes
+  preset?: Partial<PresetConfig> & Partial<GlowConfig>;
   states?: GlowState[];
   initialState?: GlowEvent;
-  children: ReactNode; // This is the required child prop
+  children: ReactNode;
   style?: StyleProp<ViewStyle>;
   isVisible?: boolean;
+  activeState?: GlowEvent;
 }
 
-// --- Utility Types ---
 export type Layout = { width: number; height: number };
 export type RGBColor = { r: number; g: number; b: number };

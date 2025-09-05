@@ -1,5 +1,3 @@
-// src/animated-glow/LazyUnifiedSkiaGlow.tsx
-
 import React from 'react';
 
 export const LazyUnifiedSkiaGlow = React.lazy(() => 

@@ -1,4 +1,4 @@
-# ✨ React Native Animated Glow v3.0
+# React Native Animated Glow v3.0.1
 
 <div align="center">
 
@@ -32,7 +32,7 @@ Check out the **[live web demo and interactive builder](https://reactnativeglow.
 -   **Easy Web Setup:** Skia's CanvasKit WASM file is loaded automatically from a CDN, no extra configuration needed.
 -   **Presets Included:** Ships with professionally designed presets to get you started instantly.
 
-## 📦 Installation
+## Installation
 
 **1. Install the library:**
 
@@ -119,13 +119,91 @@ const styles = StyleSheet.create({
 });
 ```
 
+## Controlling States
+
+The `AnimatedGlow` component is stateless by default and is controlled via the `activeState` prop. This gives you complete control to connect it to any gesture or state management system.
+
+The recommended way to handle user interactions is to wrap your content in a `Pressable` and use `React.useState` and `React.useRef` to manage the component's state between `'default'`, `'hover'`, and `'press'`.
+
+Here is a robust example demonstrating how to handle both press and hover events correctly:
+
+```jsx
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+// Import the GlowEvent type for type safety
+import AnimatedGlow, { glowPresets, type GlowEvent } from 'react-native-animated-glow';
+
+export default function MyInteractiveButton() {
+  // 1. State for the active glow effect ('default', 'hover', 'press')
+  const [glowState, setGlowState] = useState<GlowEvent>('default');
+  // 2. Ref to track if the cursor is currently hovering over the element
+  const isHovered = useRef(false);
+
+  return (
+    <AnimatedGlow 
+      preset={glowPresets.defaultRainbow}
+      // 3. Pass the state to the activeState prop to control the glow
+      activeState={glowState}
+    >
+      <Pressable
+        style={styles.button}
+        onPress={() => console.log('Button Pressed!')}
+        
+        // --- Press Events ---
+        onPressIn={() => setGlowState('press')}
+        onPressOut={() => {
+          // When the press is released, transition to 'hover' if the cursor
+          // is still over the button, otherwise return to 'default'.
+          setGlowState(isHovered.current ? 'hover' : 'default');
+        }}
+        
+        // --- Hover Events (for Web, macOS, Windows) ---
+        onHoverIn={() => {
+          isHovered.current = true;
+          // Only transition to hover state if not being actively pressed.
+          if (glowState !== 'press') {
+            setGlowState('hover');
+          }
+        }}
+        onHoverOut={() => {
+          isHovered.current = false;
+          // Only transition to default state if not being actively pressed.
+          if (glowState !== 'press') {
+            setGlowState('default');
+          }
+        }}
+      >
+        <Text style={styles.buttonText}>Tap or Hover Me</Text>
+      </Pressable>
+    </AnimatedGlow>
+  );
+}
+
+const styles = StyleSheet.create({
+  button: { 
+    paddingVertical: 20, 
+    paddingHorizontal: 40,
+    backgroundColor: '#222'
+  },
+  buttonText: { 
+    color: 'white', 
+    fontWeight: 'bold', 
+    textAlign: 'center'
+  }
+});
+```
+
 ## API Reference
 
 For a complete list of all available props and their descriptions, please see the **[Docs Tab](https://reactnativeglow.com/docs)** in the live demo app.
 
 ## Changelog
 
-### `v3.0.0`
+### `v3.0.1`
+-   Added `activeState` prop.
+-   Removed insternal state management
+
+### `v3.0.0` (Breaking Changes)
 This version introduces a more powerful and intelligent animation system along with a complete restructuring of the preset API for better organization and type safety.
 
 -   **New Feature: Intelligent Animation Blending:** A new animation system powered by Reanimated worklets smoothly interpolates *between* state configurations. When you hover, press, or return to default, every animatable property (colors, sizes, opacity, etc.) will transition gracefully over the specified duration.
@@ -144,6 +222,5 @@ This version marked a complete architectural rewrite for maximum performance and
 ### `v1.0.0`
 -   Initial release using glow particles and reanimated
 
-## 📜 License
-
+## License
 This project is licensed under the MIT License.
