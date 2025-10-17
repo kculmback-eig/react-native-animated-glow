@@ -54,6 +54,7 @@ export interface AnimatedGlowProps extends Partial<GlowConfig> {
   style?: StyleProp<ViewStyle>;
   isVisible?: boolean;
   activeState?: GlowEvent;
+  wrapperStyle?: StyleProp<ViewStyle>;
 }
 
 export type Layout = { width: number; height: number };

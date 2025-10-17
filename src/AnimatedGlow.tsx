@@ -39,6 +39,7 @@ const AnimatedGlow: FC<AnimatedGlowProps> = (props) => {
         style, 
         isVisible = true, 
         activeState: activeStateProp,
+        wrapperStyle: wrapperStyleProp,
         ...overrideProps 
     } = props;
     
@@ -94,13 +95,16 @@ const AnimatedGlow: FC<AnimatedGlowProps> = (props) => {
     const hasGlowLayers = (targetConfig.glowLayers?.length ?? 0) > 0;
     const useSkiaRenderer = useMemo(() => hasGlowLayers || hasAnimatedBorder, [hasGlowLayers, hasAnimatedBorder]);
 
-    const wrapperStyle = useMemo<StyleProp<ViewStyle>>(() => ({
-        backgroundColor: useSkiaRenderer ? 'transparent' : backgroundColor,
-        borderWidth: useSkiaRenderer ? 0 : outlineWidth,
-        borderColor: useSkiaRenderer ? 'transparent' : (Array.isArray(borderColor) ? borderColor[0] : borderColor),
-        borderRadius: cornerRadius,
-        overflow: 'hidden',
-    }), [useSkiaRenderer, outlineWidth, borderColor, cornerRadius, backgroundColor]);
+    const wrapperStyle = useMemo<StyleProp<ViewStyle>>(() => [
+        {
+            backgroundColor: useSkiaRenderer ? 'transparent' : backgroundColor,
+            borderWidth: useSkiaRenderer ? 0 : outlineWidth,
+            borderColor: useSkiaRenderer ? 'transparent' : (Array.isArray(borderColor) ? borderColor[0] : borderColor),
+            borderRadius: cornerRadius,
+            overflow: 'hidden',
+        },
+        wrapperStyleProp,
+    ], [useSkiaRenderer, outlineWidth, borderColor, cornerRadius, backgroundColor, wrapperStyleProp]);
     
     const shouldRenderSkia = useSkiaRenderer && hasLaidOut && isVisible;
 
